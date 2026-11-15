@@ -1,70 +1,86 @@
-# Getting Started with Create React App
+# Выбор пользователей и отправка приглашений
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Учебное приложение на React: загружает список пользователей, позволяет искать их по имени, фамилии или электронной почте и выбирать получателей приглашения. После нажатия «Отправить приглашение» появляется экран успеха с количеством выбранных пользователей.
 
-## Available Scripts
+Отправка приглашений демонстрационная: приложение переключает экран, запрос на отправку уведомлений не выполняется.
 
-In the project directory, you can run:
+## Установка и запуск
 
-### `npm start`
+Для запуска нужны Node.js и npm. Выполните команды в папке проекта:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```bash
+npm install
+npm start
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Откройте [http://localhost:3000](http://localhost:3000) в браузере. При сохранении изменений в коде страница обновляется автоматически.
 
-### `npm test`
+Для загрузки списка нужен доступ к интернету. Адрес API `https://reqres.in/api/users` и заголовок `x-api-key` заданы в `src/App.js`.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Как проверить
 
-### `npm run build`
+1. Откройте приложение. Во время загрузки отображаются заглушки, затем — список пользователей с фотографиями, именами и электронной почтой.
+2. Введите часть имени, фамилии или адреса электронной почты в поле поиска. Список фильтруется без учёта регистра. Очистите поле, чтобы снова увидеть всех загруженных пользователей.
+3. Пока никто не выбран, кнопка «Отправить приглашение» приглушена и недоступна.
+4. Нажмите на плюс рядом с пользователем. Его ID добавится в массив выбранных, а плюс сменится на минус. Кнопка отправки станет доступна.
+5. Нажмите на минус, чтобы отменить выбор. Если убрать всех выбранных пользователей, кнопка отправки снова заблокируется.
+6. Выберите несколько пользователей и нажмите «Отправить приглашение». Появятся зелёная галочка, сообщение «Успешно!» и количество приглашённых, соответствующее числу выбранных пользователей.
+7. Нажмите «Назад». Страница перезагрузится, поиск и выбор сбросятся, приложение снова загрузит список пользователей.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Поиск меняет только отображаемый список: выбранные пользователи сохраняются при изменении поискового запроса.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Как редактировать
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Основные файлы проекта:
 
-### `npm run eject`
+```text
+public/
+  index.html                  HTML-шаблон с корневым элементом приложения
+src/
+  index.js                    Точка входа и подключение React
+  index.css                   Базовые стили страницы
+  App.js                      Загрузка данных и состояние приложения
+  App.css                     Оформление списка, кнопок и экрана успеха
+  App.test.js                 Проверки выбора пользователей и отправки
+  components/
+    Users/
+      Users.jsx               Поиск, список и кнопка отправки
+      User.jsx                Карточка пользователя и переключение плюса/минуса
+    Success/
+      Success.jsx             Экран успеха, количество приглашённых и кнопка «Назад»
+    Skeleton/
+      Skeleton.jsx            Анимированная заглушка загрузки
+    Icons/
+      Search.jsx              Значок поиска
+      Plus.jsx                Значок добавления пользователя
+      Minus.jsx               Значок отмены выбора
+      Done.jsx                Галочка на экране успеха
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+В `App.js` хранятся список пользователей (`users`), признак загрузки (`isLoading`), поисковый запрос (`searchValue`), массив выбранных ID (`isInvites`) и признак показа экрана успеха (`success`). Функция `onClickInvites` добавляет или удаляет ID, а `onClickSendInvites` открывает экран `Success`. Данные и обработчики передаются дочерним компонентам через props.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Чтобы изменить правила поиска, отредактируйте фильтрацию в `Users.jsx`. Тексты результата и поведение кнопки «Назад» находятся в `Success.jsx`. Цвета, размеры и расположение элементов задаются в `App.css`, в том числе классами `.App`, `.users-list`, `.action`, `.send-invite-btn` и `.success-block`.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Сборка и тесты
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Создать оптимизированную сборку в папке `build`:
 
-## Learn More
+```bash
+npm run build
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Запустить тесты один раз:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```bash
+npm test -- --watchAll=false --runInBand
+```
 
-### Code Splitting
+Тесты проверяют блокировку отправки при пустом выборе, её снятие после выбора пользователя, повторную блокировку после отмены выбора и правильное количество приглашённых на экране успеха. Данные API в тестах подменяются, поэтому для них не нужен доступ к сети.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Технологии
 
-### Analyzing the Bundle Size
+React, React DOM, хуки `useState` и `useEffect`, Fetch API, CSS и SVG. Заглушки загрузки реализованы с помощью `react-content-loader`, запуск и сборка — через Create React App (`react-scripts`), тесты — через Jest и React Testing Library.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## Цель проекта
 
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Проект создан в учебных целях для практики работы с компонентами React, props, состоянием, загрузкой данных, поиском, обработчиками событий и условным отображением интерфейса.
